@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
 
-import { ILocation } from 'src/interfaces/location.interface';
+import { ILocation } from '../interfaces/location.interface';
 
 /** */
 export class LocationDto implements ILocation {
@@ -21,3 +22,5 @@ export class LocationDto implements ILocation {
   @IsString()
   description: string;
 }
+
+export class UpdateLocationDto extends PartialType(LocationDto) {}

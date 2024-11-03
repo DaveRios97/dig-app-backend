@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -17,28 +17,52 @@ export class CoworkingsService {
 
   /** Get all of the Coworkings from DataBase */
   getAll(): object {
-    return this.coworkingRepo.find({
-      relations: ['location'],
-    });
+    const allCoworkjings = this.coworkingRepo
+      .find({
+        relations: ['location'],
+      })
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        throw new BadRequestException(`${err.message || 'Unexpected Error'}`);
+      });
+    return allCoworkjings;
   }
 
   /** Finds a Coworking by its id */
   async findOne(id: string): Promise<Coworking> {
-    return await this.coworkingRepo.findOne({ where: { id } });
+    const coworking = await this.coworkingRepo
+      .findOne({
+        where: { id },
+        relations: ['location'],
+      })
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        throw new BadRequestException(`${err.message || 'Unexpected Error'}`);
+      });
+    return coworking;
   }
 
   /** Creates a Coworking on DataBase */
   async create(body: CoworkingDto): Promise<Coworking> {
     const newCoworking = this.coworkingRepo.create(body);
+    // Refactor to mandatori
     if (body.location) {
       newCoworking.location = await this.createLocation(body.location);
     }
-    return this.coworkingRepo.save(newCoworking);
-  }
 
-  createLocation(body: LocationDto): Promise<Location> {
-    const newLocation = this.locationrepo.create(body);
-    return this.locationrepo.save(newLocation);
+    const coworking = this.coworkingRepo
+      .save(newCoworking)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        throw new BadRequestException(`${err.message || 'Unexpected Error'}`);
+      });
+    return coworking;
   }
 
   /** Updates Coworking by Id */
@@ -52,4 +76,21 @@ export class CoworkingsService {
   detele(id: string) {
     return this.coworkingRepo.delete(id);
   }
+
+  //#region Aditional validations relationships
+
+  /** Creates a location on DataBase */
+  createLocation(body: LocationDto): Promise<Location> {
+    const newLocation = this.locationrepo.create(body);
+    const location = this.locationrepo
+      .save(newLocation)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        throw new BadRequestException(`${err.message || 'Unexpected Error'}`);
+      });
+    return location;
+  }
+  //#endregion
 }

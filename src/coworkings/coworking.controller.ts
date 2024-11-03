@@ -16,7 +16,7 @@ import { CoworkingDto } from '../dtos/coworking.dto';
 export class CoworkingsController {
   constructor(private readonly coworkingService: CoworkingsService) {}
 
-  /** Get al Coworkings */
+  /** Get all Coworkings */
   @Get()
   getAllUsers() {
     return this.coworkingService.getAll();

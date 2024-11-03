@@ -1,31 +1,39 @@
 import { Type } from 'class-transformer';
 import { IsString, IsUrl, IsNotEmpty } from 'class-validator';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 
-import { Location } from 'src/entities/location.entity';
 import { LocationDto } from './location.dto';
 
-/** */
+/** Coworking Data Transfer Object */
 export class CoworkingDto {
-  /** */
+  /** COworking Name */
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly name: string;
 
-  /** */
-  @Type(() => LocationDto)
-  readonly location: Location;
-
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly openingTime: string;
 
-  /** */
+  /** Coworking Opening Hour*/
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly closingTime: string;
 
-  /** */
+  /** Coworking Closing Hour */
   @IsUrl()
   @IsNotEmpty()
+  @ApiProperty()
   readonly mainPhoto: string;
+
+  /** Coworking Location */
+  @Type(() => LocationDto)
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly location: LocationDto;
 }
+
+export class UpdateCoworkingDto extends PartialType(CoworkingDto) {}

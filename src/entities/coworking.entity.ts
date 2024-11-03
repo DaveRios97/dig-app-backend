@@ -11,9 +11,8 @@ export class Coworking extends BaseEntity implements ICoworking {
   @Column({ unique: true })
   name: string;
 
-  @OneToOne(() => Location, {
-    nullable: true,
-  })
+  /** Location: references to Location.Id */
+  @OneToOne(() => Location, { nullable: true })
   @JoinColumn({ referencedColumnName: 'id' })
   location: Location;
 
