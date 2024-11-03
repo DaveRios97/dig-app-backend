@@ -31,7 +31,6 @@ export class CoworkingsController {
   /** Create Coworking */
   @Post()
   async createUser(@Body() body: CoworkingDto) {
-    console.log(body);
     return await this.coworkingService.create(body);
   }
 
